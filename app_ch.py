@@ -10,7 +10,7 @@ client = OpenAI(api_key="sk-proj-rFEhmAv0TyyQ2KbTgdqJq-AvK8pkm-HiRFcAWa3_fvjDR-y
 # ✅ 경로 설정
 BASE_DIR = "C:/Users/jungy/OneDrive/바탕 화면/혼공파이썬/프로덕트오너 양성과정/고대과정/.streamlit"
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
-FONT_PATH = "NanumGothic.ttf"
+FONT_PATH = os.path.join(os.path.dirname(__file__), "NanumGothic.ttf")
 
 CHARACTER_PATHS = {
     "곰캐릭터": os.path.join(IMAGE_DIR, "bear_character"),
