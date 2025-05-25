@@ -8,9 +8,9 @@ from openai import OpenAI
 client = OpenAI(api_key="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")  # 본인 키로 교체하세요
 
 # ✅ 경로 설정
-BASE_DIR = "C:/Users/jungy/OneDrive/바탕 화면/혼공파이썬/프로덕트오너 양성과정/고대과정/.streamlit"
+BASE_DIR = os.path.dirname(__file__)
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
-FONT_PATH = os.path.join(os.path.dirname(__file__), "NanumGothic.ttf")
+FONT_PATH = os.path.join(BASE_DIR, "NanumGothic.ttf")  # 폰트도 동일하게
 
 CHARACTER_PATHS = {
     "곰캐릭터": os.path.join(IMAGE_DIR, "bear_character"),
