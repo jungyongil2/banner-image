@@ -5,7 +5,7 @@ import streamlit as st
 from openai import OpenAI
 
 # ✅ GPT API Key 직접 입력
-client = OpenAI(api_key="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")  # 본인 키로 교체하세요
+client = OpenAI(api_key="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")  # 본인 키로 교체하세요
 
 # ✅ 경로 설정
 BASE_DIR = os.path.dirname(__file__)
