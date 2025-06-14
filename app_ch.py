@@ -1,42 +1,16 @@
-
 import os
 import random
 from PIL import Image, ImageDraw, ImageFont
 import streamlit as st
 from openai import OpenAI
 
-# ✅ 스타일 개선
-st.set_page_config(layout="wide")
-st.markdown("""
-<style>
-.stApp {
-    background-color: #f4f9ff;
-    font-family: 'NanumGothic', sans-serif;
-}
-.stButton > button {
-    background-color: #2E3192;
-    color: white;
-    font-weight: bold;
-    border-radius: 12px;
-    padding: 10px 24px;
-}
-.stDownloadButton > button {
-    background-color: #2196F3;
-    color: white;
-    font-weight: bold;
-    border-radius: 10px;
-    height: 40px;
-}
-</style>
-""", unsafe_allow_html=True)
-
 # ✅ GPT API Key 직접 입력
-client = OpenAI(api_key="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")  # 본인 키로 교체
+client = OpenAI(api_key="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")  # 본인 키로 교체하세요
 
 # ✅ 경로 설정
 BASE_DIR = os.path.dirname(__file__)
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
-FONT_PATH = os.path.join(BASE_DIR, "NanumGothic.ttf")
+FONT_PATH = os.path.join(BASE_DIR, "NanumGothic.ttf")  # 폰트도 동일하게
 
 CHARACTER_PATHS = {
     "곰캐릭터": os.path.join(IMAGE_DIR, "bear_character"),
@@ -47,7 +21,7 @@ CHARACTER_PATHS = {
 BANNER_SIZE = {
     "카카오 알림톡 배너": (1000, 300),
     "홈 배너": (1000, 300),
-    "홈 배너 (세로)": (600, 800)
+    "홈 배너 (세로)": (600, 800),
 }
 
 BANNER_BACKGROUND = {
@@ -97,7 +71,7 @@ def generate_marketing_text(product, rate, feature):
             temperature=0.5,
             max_tokens=150
         )
-        content = response.choices[0].message.content.strip().split("\n" if "\n" in response.choices[0].message.content else "\n")
+        content = response.choices[0].message.content.strip().split("\\n" if "\\n" in response.choices[0].message.content else "\n")
         headline, subtext = extract_lines(content)
     except Exception as e:
         st.error(f"GPT 생성 실패: {e}")
@@ -118,8 +92,8 @@ def create_banner(banner_type, character, headline, subtext):
     headline_wrapped = wrap_text(headline, title_font, max_text_width)
     subtext_wrapped = wrap_text(subtext, sub_font, max_text_width)
     all_lines = headline_wrapped + subtext_wrapped
-
     total_text_height = len(all_lines) * (title_font.size + 10)
+
     char_folder = CHARACTER_PATHS[character]
     images = [f for f in os.listdir(char_folder) if f.endswith((".png", ".jpg"))]
     char_img = None
@@ -166,27 +140,27 @@ def create_banner(banner_type, character, headline, subtext):
     return banner
 
 # ✅ Streamlit UI
-st.title("📢 금융 상품 GPT 배너 생성기")
-st.markdown("은행 마케팅 배너를 손쉽게 만들어 보세요. GPT로 문구도 자동 생성됩니다.")
+st.set_page_config(layout="wide")
+st.title("🐧 GPT 문구 안정적 생성 배너 생성기")
 
 col1, col2 = st.columns([1, 2])
 with col1:
-    banner_type = st.selectbox("📐 배너 형태 선택", list(BANNER_SIZE.keys()))
-    character = st.selectbox("🎨 캐릭터 선택", list(CHARACTER_PATHS.keys()))
-    use_gpt = st.radio("🧠 문구 생성 방식", ["GPT 자동 생성", "직접 입력"])
+    banner_type = st.selectbox("배너형태", list(BANNER_SIZE.keys()))
+    character = st.selectbox("캐릭터 선택", list(CHARACTER_PATHS.keys()))
+    use_gpt = st.radio("문구 생성 방식", ["GPT 자동 생성", "직접 입력"])
 
 with col2:
-    product = st.text_input("📦 상품명", "모두의 적금")
-    rate = st.text_input("📈 금리", "최대 연 7%")
-    feature = st.text_area("💡 상품 특징", "급여이체, 연금수령, 가맹점결제계좌 중 하나만 있어도 혜택!")
+    product = st.text_input("상품명", "모두의 적금")
+    rate = st.text_input("금리", "최대 연 7%")
+    feature = st.text_area("상품 특징", "급여이체, 연금수령, 가맹점결제계좌 중 하나만 있어도 혜택!")
 
 if use_gpt == "GPT 자동 생성":
     headline, subtext = generate_marketing_text(product, rate, feature)
-    st.markdown(f"🧠 **헤드라인:** `{headline}`")
-    st.markdown(f"🧠 **설명:** `{subtext}`")
+    st.markdown(f"🧠 **헤드라인:** {headline}")
+    st.markdown(f"🧠 **설명:** {subtext}")
 else:
-    headline = st.text_input("✏️ 헤드라인 입력", product + " 지금 시작하세요!")
-    subtext = st.text_input("📝 부가 설명 입력", feature)
+    headline = st.text_input("헤드라인 입력", product + " 지금 시작하세요!")
+    subtext = st.text_input("부가 설명 입력", feature)
 
 if st.button("🎯 배너 생성"):
     banner = create_banner(banner_type, character, headline, subtext)
@@ -196,4 +170,4 @@ if st.button("🎯 배너 생성"):
     output_path = os.path.join(BASE_DIR, "final_banner.png")
     banner.save(output_path)
     with open(output_path, "rb") as f:
-        st.download_button("📥 배너 다운로드", f, file_name="banner.png")
+        st.download_button("📥 배너 다운로드", f, file_name="banner.png") 
